@@ -5,11 +5,8 @@ sympy>=1.14,<2.0
 numpy>=2.0,<3.0
 scipy>=1.14,<2.0
 
-# Machine Learning
-scikit-learn>=2.3,<3.0
-
-# python-dotenv pour charger les variables d'environnement
-python-dotenv>=1.0,<2.0
+# Variables d'environnement
+python-dotenv==1.2.4
 
 # Données et visualisation
 pandas>=2.2,<3.0
