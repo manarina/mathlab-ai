@@ -8,6 +8,9 @@ scipy>=1.14,<2.0
 # Variables d'environnement
 python-dotenv==1.2.4
 
+# OpenAI API
+openai>=1.0,<3.0
+
 # Données et visualisation
 pandas>=2.2,<3.0
 plotly>=6.0,<7.0
