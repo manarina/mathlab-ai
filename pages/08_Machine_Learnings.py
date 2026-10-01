@@ -8,6 +8,12 @@ Interface Streamlit dédiée aux algorithmes de Machine Learning.
 Modules disponibles :
     - Linear Regression
     - Logistic Regression
+    - K-Nearest Neighbors (K-NN)
+    - K-Means Clustering
+    - Decision Tree
+    - Random Forest
+    - Naive Bayes
+    - Principal Component Analysis (PCA)
 
 Les calculs sont effectués dans :
     core.machine_learning.linear_regression
@@ -43,6 +49,17 @@ from core.machine_learning.decision_tree import (
     decision_tree,
 )
 
+from core.machine_learning.random_forest import (
+    random_forest,
+)
+
+from core.machine_learning.naive_bayes import (
+    naive_bayes,
+)    
+
+from core.machine_learning.pca import (
+    pca,
+)
 
 # ============================================================
 # PAGE CONFIGURATION
@@ -2410,85 +2427,88 @@ if algorithm == "🧩 K-Means":
                 "entre les caractéristiques."
             ) from exc
 
-# ========================================================
-# EXECUTION
-# ========================================================
 
-if st.button(
-    "🚀 Exécuter K-Means",
-    type="primary",
-    use_container_width=True,
-    key="kmeans_execute",
-):
+    # ========================================================
+    # EXECUTION
+    # ========================================================
 
-    try:
+    if st.button(
+        "🚀 Exécuter K-Means",
+        type="primary",
+        use_container_width=True,
+        key="kmeans_execute",
+    ):
 
-        X = parse_kmeans_features(
-            kmeans_x_input
-        )
+        try:
 
-        n_clusters = int(
-            kmeans_n_clusters
-        )
-
-        max_iterations = int(
-            kmeans_max_iterations
-        )
-
-        tolerance = float(
-            kmeans_tolerance
-        )
-
-        random_state = int(
-            kmeans_random_state
-        )
-
-        # ------------------------------------------------
-        # VALIDATION INTERFACE
-        # ------------------------------------------------
-
-        if len(X) < n_clusters:
-
-            raise ValueError(
-                "Le nombre de clusters K ne peut pas "
-                "être supérieur au nombre d'observations."
+            X = parse_kmeans_features(
+                kmeans_x_input
             )
 
-        if n_clusters < 1:
-
-            raise ValueError(
-                "K doit être supérieur ou égal à 1."
+            n_clusters = int(
+                kmeans_n_clusters
             )
 
-        # ------------------------------------------------
-        # MODEL
-        # ------------------------------------------------
+            max_iterations = int(
+                kmeans_max_iterations
+            )
 
-        result = kmeans(
-            X,
-            n_clusters=n_clusters,
-            max_iterations=max_iterations,
-            tolerance=tolerance,
-            random_state=random_state,
-        )
+            tolerance = float(
+                kmeans_tolerance
+            )
 
-        # ------------------------------------------------
-        # SESSION STATE
-        # ------------------------------------------------
+            random_state = int(
+                kmeans_random_state
+            )
 
-        st.session_state[
-            "kmeans_result"
-        ] = result
+            # ------------------------------------------------
+            # VALIDATION INTERFACE
+            # ------------------------------------------------
 
-        st.session_state[
-            "kmeans_X"
-        ] = X
+            if len(X) < n_clusters:
 
-    except (ValueError, TypeError) as exc:
+                raise ValueError(
+                    "Le nombre de clusters K ne peut pas "
+                    "être supérieur au nombre d'observations."
+                )
 
-        st.error(
-            f"❌ {exc}"
-        )
+            if n_clusters < 1:
+
+                raise ValueError(
+                    "K doit être supérieur ou égal à 1."
+                )
+
+            # ------------------------------------------------
+            # MODEL
+            # ------------------------------------------------
+
+            result = kmeans(
+                X,
+                n_clusters=n_clusters,
+                max_iterations=max_iterations,
+                tolerance=tolerance,
+                random_state=random_state,
+            )
+
+            # ------------------------------------------------
+            # SESSION STATE
+            # ------------------------------------------------
+
+            st.session_state[
+                "kmeans_result"
+            ] = result
+
+            st.session_state[
+                "kmeans_X"
+            ] = X
+
+        except (ValueError, TypeError) as exc:
+
+            st.error(
+                f"❌ {exc}"
+            )
+
+
 
 
 
@@ -2967,8 +2987,7 @@ if algorithm == "🌳 Decision Tree":
         3. séparer les observations ;
         4. calculer l'impureté de Gini ;
         5. conserver la meilleure séparation ;
-        6. répéter récursivement jusqu'à atteindre une condition
-           d'arrêt.
+        6. répéter récursivement jusqu'à atteindre une condition d'arrêt.
         """
     )
 
@@ -3002,10 +3021,8 @@ if algorithm == "🌳 Decision Tree":
             "6,6"
         )
 
-        default_dt_y = (
-            "0,0,0,0,1,1,1,1"
-        )
-
+        default_dt_y = "0,0,0,0,1,1,1,1"
+        default_dt_test_x = "1.5,1.5; 5.5,5.5"
         default_dt_max_depth = 3
         default_dt_min_samples_split = 2
 
@@ -3022,10 +3039,8 @@ if algorithm == "🌳 Decision Tree":
             "8,8"
         )
 
-        default_dt_y = (
-            "0,0,0,0,1,1,1,1"
-        )
-
+        default_dt_y = "0,0,0,0,1,1,1,1"
+        default_dt_test_x = "1.5,2.5; 7.5,7.5"
         default_dt_max_depth = 3
         default_dt_min_samples_split = 2
 
@@ -3046,10 +3061,8 @@ if algorithm == "🌳 Decision Tree":
             "10,10"
         )
 
-        default_dt_y = (
-            "0,0,0,0,1,1,1,1,2,2,2,2"
-        )
-
+        default_dt_y = "0,0,0,0,1,1,1,1,2,2,2,2"
+        default_dt_test_x = "1.5,1.5; 5.5,5.5; 9.5,9.5"
         default_dt_max_depth = 4
         default_dt_min_samples_split = 2
 
@@ -3066,10 +3079,8 @@ if algorithm == "🌳 Decision Tree":
             "6,6"
         )
 
-        default_dt_y = (
-            "0,0,0,0,1,1,1,1"
-        )
-
+        default_dt_y = "0,0,0,0,1,1,1,1"
+        default_dt_test_x = "1.5,1.5; 5.5,5.5"
         default_dt_max_depth = 3
         default_dt_min_samples_split = 2
 
@@ -3146,7 +3157,7 @@ if algorithm == "🌳 Decision Tree":
 
     decision_tree_test_input = st.text_area(
         "Nouvelles observations X",
-        value="1.5,1.5; 5.5,5.5",
+        value=default_dt_test_x,
         height=100,
         help=(
             "Entrez les nouvelles observations avec le même "
@@ -3198,23 +3209,7 @@ if algorithm == "🌳 Decision Tree":
     # PARSING X
     # ========================================================
 
-    def parse_decision_tree_features(
-        value: str,
-    ) -> np.ndarray:
-        """
-        Convertit les données saisies dans Streamlit
-        en matrice NumPy.
-
-        Format :
-
-        1,2; 2,3; 4,5
-
-        devient :
-
-        [[1, 2],
-         [2, 3],
-         [4, 5]]
-        """
+    def parse_decision_tree_features(value: str) -> np.ndarray:
 
         if not value.strip():
 
@@ -3311,15 +3306,7 @@ if algorithm == "🌳 Decision Tree":
     # PARSING Y
     # ========================================================
 
-    def parse_decision_tree_labels(
-        value: str,
-    ) -> np.ndarray:
-        """
-        Convertit les classes Y en tableau NumPy.
-
-        Les labels numériques sont convertis en nombres.
-        Les labels textuels sont conservés.
-        """
+    def parse_decision_tree_labels(value: str) -> np.ndarray:
 
         if not value.strip():
 
@@ -3373,56 +3360,6 @@ if algorithm == "🌳 Decision Tree":
             )
 
     # ========================================================
-    # REPRÉSENTATION DE L'ARBRE
-    # ========================================================
-
-    
-def format_decision_tree(node, depth=0):
-    """
-    Formate récursivement un arbre de décision
-    sous forme de texte lisible.
-
-    Compatible avec le TreeNode utilisé dans
-    core.machine_learning.decision_tree.
-    """
-    indent = "    " * depth
-
-    # ---------------------------------------------------------
-    # FEUILLE
-    # ---------------------------------------------------------
-    if node.prediction is not None:
-        return (
-            f"{indent}└── Feuille : "
-            f"classe = {node.prediction}, "
-            f"échantillons = {node.n_samples}, "
-            f"Gini = {node.gini:.4f}\n"
-        )
-
-    # ---------------------------------------------------------
-    # NOEUD INTERNE
-    # ---------------------------------------------------------
-    text = (
-        f"{indent}├── X[{node.feature_index}] "
-        f"<= {node.threshold:.4f} "
-        f"(Gini = {node.gini:.4f}, "
-        f"échantillons = {node.n_samples})\n"
-    )
-
-    # Branche gauche
-    if node.left is not None:
-        text += f"{indent}│   Gauche :\n"
-        text += format_decision_tree(node.left, depth + 2)
-
-    # Branche droite
-    if node.right is not None:
-        text += f"{indent}│   Droite :\n"
-        text += format_decision_tree(node.right, depth + 2)
-
-    return text
-
-
-
-    # ========================================================
     # EXECUTION
     # ========================================================
 
@@ -3434,6 +3371,10 @@ def format_decision_tree(node, depth=0):
     ):
 
         try:
+
+            # ------------------------------------------------
+            # PARSING
+            # ------------------------------------------------
 
             X_train = parse_decision_tree_features(
                 decision_tree_x_input
@@ -3456,7 +3397,7 @@ def format_decision_tree(node, depth=0):
             )
 
             # ------------------------------------------------
-            # VALIDATION INTERFACE
+            # VALIDATION
             # ------------------------------------------------
 
             if len(X_train) != len(y_train):
@@ -3481,14 +3422,14 @@ def format_decision_tree(node, depth=0):
                     "pas être vides."
                 )
 
-            if len(np.unique(y_train)) < 1:
+            if len(y_train) == 0:
 
                 raise ValueError(
                     "Au moins une classe est nécessaire."
                 )
 
             # ------------------------------------------------
-            # MODEL
+            # CONSTRUCTION DU MODÈLE
             # ------------------------------------------------
 
             result = decision_tree(
@@ -3500,7 +3441,7 @@ def format_decision_tree(node, depth=0):
             )
 
             # ------------------------------------------------
-            # SESSION STATE
+            # SAUVEGARDE
             # ------------------------------------------------
 
             st.session_state[
@@ -3519,11 +3460,89 @@ def format_decision_tree(node, depth=0):
                 "decision_tree_X_test"
             ] = X_test
 
+            st.success(
+                "✅ Arbre de décision construit avec succès."
+            )
+
         except (ValueError, TypeError) as exc:
 
             st.error(
                 f"❌ {exc}"
             )
+
+
+# ============================================================
+# FONCTION D'AFFICHAGE DE L'ARBRE
+# ============================================================
+
+def format_decision_tree(node, depth=0):
+    """
+    Formate récursivement l'arbre de décision.
+
+    Compatible avec TreeNode.
+
+    Attributs utilisés :
+        - prediction
+        - feature_index
+        - threshold
+        - left
+        - right
+    """
+
+    indent = "    " * depth
+
+    # ========================================================
+    # FEUILLE
+    # ========================================================
+
+    if node.prediction is not None:
+
+        return (
+            f"{indent}└── Feuille : "
+            f"classe = {node.prediction}\n"
+        )
+
+    # ========================================================
+    # NŒUD INTERNE
+    # ========================================================
+
+    text = (
+        f"{indent}├── "
+        f"X[{node.feature_index}] "
+        f"<= {node.threshold:.4f}\n"
+    )
+
+    # ========================================================
+    # BRANCHE GAUCHE
+    # ========================================================
+
+    if node.left is not None:
+
+        text += (
+            f"{indent}│   ├── Gauche :\n"
+        )
+
+        text += format_decision_tree(
+            node.left,
+            depth + 2,
+        )
+
+    # ========================================================
+    # BRANCHE DROITE
+    # ========================================================
+
+    if node.right is not None:
+
+        text += (
+            f"{indent}│   └── Droite :\n"
+        )
+
+        text += format_decision_tree(
+            node.right,
+            depth + 2,
+        )
+
+    return text
 
 
 # ============================================================
@@ -3553,7 +3572,9 @@ if (
 
     st.divider()
 
-    st.header("📊 Résultats — Decision Tree")
+    st.header(
+        "📊 Résultats — Decision Tree"
+    )
 
     # ========================================================
     # METRICS
@@ -3604,7 +3625,9 @@ if (
     # PARAMÈTRES
     # ========================================================
 
-    st.subheader("⚙️ Paramètres utilisés")
+    st.subheader(
+        "⚙️ Paramètres utilisés"
+    )
 
     parameter_df = pd.DataFrame(
         {
@@ -3674,10 +3697,12 @@ if (
     )
 
     # ========================================================
-    # VISUALIZATION
+    # VISUALISATION
     # ========================================================
 
-    st.subheader("📈 Visualisation des données")
+    st.subheader(
+        "📈 Visualisation des données"
+    )
 
     if plt is None:
 
@@ -3710,7 +3735,7 @@ if (
             )
 
         # ----------------------------------------------------
-        # TEST
+        # OBSERVATIONS DE TEST
         # ----------------------------------------------------
 
         ax.scatter(
@@ -3755,6 +3780,8 @@ if (
 
         st.pyplot(fig)
 
+        plt.close(fig)
+
     else:
 
         st.info(
@@ -3767,7 +3794,9 @@ if (
     # STRUCTURE DE L'ARBRE
     # ========================================================
 
-    st.subheader("🌳 Structure de l'arbre")
+    st.subheader(
+        "🌳 Structure de l'arbre"
+    )
 
     tree_text = format_decision_tree(
         result["tree"]
@@ -3782,16 +3811,20 @@ if (
     # INTERPRÉTATION
     # ========================================================
 
-    st.subheader("💡 Interprétation")
+    st.subheader(
+        "💡 Interprétation"
+    )
 
     st.markdown(
         f"""
         **Profondeur réelle de l'arbre :**
+
         `{result["tree_depth"]}`
 
         L'arbre contient **{result["n_nodes"]} nœuds**.
 
         **Nombre de classes :**
+
         `{result["n_classes"]}`
 
         Le Decision Tree construit des règles successives
@@ -3804,11 +3837,15 @@ if (
 
         Une observation est envoyée vers une branche lorsque :
 
-        $$X_j \\leq seuil$$
+        $$
+        X_j \\leq seuil
+        $$
 
         et vers l'autre branche lorsque :
 
-        $$X_j > seuil$$
+        $$
+        X_j > seuil
+        $$
         """
     )
 
@@ -3817,6 +3854,7 @@ if (
         st.markdown(
             f"""
             **Accuracy sur les données d'entraînement :**
+
             `{result["accuracy"]:.2%}`
 
             Cette valeur représente la proportion d'observations
@@ -3913,7 +3951,7 @@ if (
             processus est appliqué aux deux sous-groupes :
 
             $$
-            X_j \\leq seuil
+            X_j \leq seuil
             $$
 
             et :
@@ -3967,6 +4005,2287 @@ if (
 
             Elle mesure la proportion d'observations correctement
             classées.
+            """
+        )
+
+     
+
+# ============================================================
+# RANDOM FOREST
+# ============================================================
+
+if algorithm == "🌲 Random Forest":
+
+    st.header("🌲 Random Forest")
+
+    st.markdown(
+        """
+        Le **Random Forest** est un algorithme de Machine Learning
+        supervisé utilisé notamment pour la **classification**.
+
+        Il combine plusieurs **arbres de décision** afin d'obtenir
+        une prédiction collective plus robuste.
+
+        Le principe général est :
+
+        1. créer plusieurs échantillons bootstrap des données ;
+        2. construire un arbre de décision pour chaque échantillon ;
+        3. sélectionner aléatoirement un sous-ensemble de caractéristiques
+           pour chaque arbre ;
+        4. faire une prédiction avec chaque arbre ;
+        5. utiliser un **vote majoritaire** pour obtenir la prédiction finale.
+
+        Cette approche constitue un exemple d'**ensemble learning**.
+        """
+    )
+
+    # ========================================================
+    # EXEMPLES
+    # ========================================================
+
+    st.subheader("📊 Données de classification")
+
+    random_forest_example = st.selectbox(
+        "Choisir un exemple",
+        [
+            "Données personnalisées",
+            "Classification simple",
+            "Deux groupes",
+            "Classification multiclasses",
+        ],
+        key="random_forest_example",
+    )
+
+    if random_forest_example == "Classification simple":
+
+        default_rf_x = (
+            "1,1; "
+            "1,2; "
+            "2,1; "
+            "2,2; "
+            "5,5; "
+            "5,6; "
+            "6,5; "
+            "6,6"
+        )
+
+        default_rf_y = "0,0,0,0,1,1,1,1"
+        default_rf_test_x = "1.5,1.5; 5.5,5.5"
+
+    elif random_forest_example == "Deux groupes":
+
+        default_rf_x = (
+            "1,2; "
+            "1,3; "
+            "2,2; "
+            "2,3; "
+            "7,7; "
+            "7,8; "
+            "8,7; "
+            "8,8"
+        )
+
+        default_rf_y = "0,0,0,0,1,1,1,1"
+        default_rf_test_x = "1.5,2.5; 7.5,7.5"
+
+    elif random_forest_example == "Classification multiclasses":
+
+        default_rf_x = (
+            "1,1; "
+            "1,2; "
+            "2,1; "
+            "2,2; "
+            "5,5; "
+            "5,6; "
+            "6,5; "
+            "6,6; "
+            "9,9; "
+            "9,10; "
+            "10,9; "
+            "10,10"
+        )
+
+        default_rf_y = (
+            "0,0,0,0,1,1,1,1,2,2,2,2"
+        )
+
+        default_rf_test_x = (
+            "1.5,1.5; "
+            "5.5,5.5; "
+            "9.5,9.5"
+        )
+
+    else:
+
+        default_rf_x = (
+            "1,1; "
+            "1,2; "
+            "2,1; "
+            "2,2; "
+            "5,5; "
+            "5,6; "
+            "6,5; "
+            "6,6"
+        )
+
+        default_rf_y = "0,0,0,0,1,1,1,1"
+        default_rf_test_x = "1.5,1.5; 5.5,5.5"
+
+    # ========================================================
+    # FORMAT DES DONNÉES
+    # ========================================================
+
+    st.info(
+        """
+        **Format de X :**
+
+        Séparez les observations par `;` et les caractéristiques
+        par `,`.
+
+        Exemple :
+
+        `1,1; 1,2; 2,1; 2,2`
+
+        correspond à :
+
+        `[[1,1], [1,2], [2,1], [2,2]]`
+
+        **Format de Y :**
+
+        Une classe par observation, séparée par des virgules.
+
+        Exemple :
+
+        `0,0,0,0,1,1,1,1`
+
+        Les classes peuvent être numériques ou textuelles.
+        """
+    )
+
+    # ========================================================
+    # DONNÉES D'ENTRAÎNEMENT
+    # ========================================================
+
+    st.subheader("📥 Données d'entraînement")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+
+        random_forest_x_input = st.text_area(
+            "Caractéristiques X",
+            value=default_rf_x,
+            height=150,
+            help=(
+                "Séparez les observations par ';' et les "
+                "caractéristiques par ','."
+            ),
+            key="random_forest_x",
+        )
+
+    with col2:
+
+        random_forest_y_input = st.text_area(
+            "Classes Y",
+            value=default_rf_y,
+            height=150,
+            help=(
+                "Entrez une classe pour chaque observation, "
+                "séparée par des virgules."
+            ),
+            key="random_forest_y",
+        )
+
+    # ========================================================
+    # DONNÉES DE TEST
+    # ========================================================
+
+    st.subheader("🔍 Observations à classifier")
+
+    random_forest_test_input = st.text_area(
+        "Nouvelles observations X",
+        value=default_rf_test_x,
+        height=100,
+        help=(
+            "Entrez les nouvelles observations avec le même "
+            "nombre de caractéristiques que X."
+        ),
+        key="random_forest_test_x",
+    )
+
+    # ========================================================
+    # PARAMÈTRES
+    # ========================================================
+
+    st.subheader("⚙️ Paramètres du Random Forest")
+
+    parameter_col1, parameter_col2, parameter_col3 = st.columns(3)
+
+    with parameter_col1:
+
+        random_forest_n_estimators = st.number_input(
+            "Nombre d'arbres",
+            min_value=1,
+            max_value=500,
+            value=10,
+            step=1,
+            key="random_forest_n_estimators",
+            help=(
+                "Nombre d'arbres de décision constituant "
+                "la forêt."
+            ),
+        )
+
+    with parameter_col2:
+
+        random_forest_max_depth = st.number_input(
+            "Profondeur maximale",
+            min_value=0,
+            max_value=100,
+            value=5,
+            step=1,
+            key="random_forest_max_depth",
+            help=(
+                "Profondeur maximale de chaque arbre."
+            ),
+        )
+
+    with parameter_col3:
+
+        random_forest_min_samples_split = st.number_input(
+            "Minimum d'observations / split",
+            min_value=2,
+            max_value=1000,
+            value=2,
+            step=1,
+            key="random_forest_min_samples_split",
+            help=(
+                "Nombre minimal d'observations nécessaires "
+                "pour diviser un nœud."
+            ),
+        )
+
+    # ========================================================
+    # MAX FEATURES
+    # ========================================================
+
+    random_forest_max_features_mode = st.selectbox(
+        "Nombre de caractéristiques utilisées par arbre",
+        [
+            "sqrt (automatique)",
+            "Toutes les caractéristiques",
+            "Nombre personnalisé",
+        ],
+        key="random_forest_max_features_mode",
+        help=(
+            "Le mode sqrt utilise √p caractéristiques "
+            "par arbre."
+        ),
+    )
+
+    if random_forest_max_features_mode == "sqrt (automatique)":
+
+        random_forest_max_features = None
+
+    elif random_forest_max_features_mode == "Toutes les caractéristiques":
+
+        random_forest_max_features = "all"
+
+    else:
+
+        random_forest_max_features = st.number_input(
+            "Max features",
+            min_value=1,
+            max_value=100,
+            value=1,
+            step=1,
+            key="random_forest_max_features_custom",
+        )
+
+    # ========================================================
+    # RANDOM STATE
+    # ========================================================
+
+    random_forest_random_state = st.number_input(
+        "Random state",
+        min_value=0,
+        max_value=100000,
+        value=42,
+        step=1,
+        key="random_forest_random_state",
+        help=(
+            "Permet d'obtenir des résultats reproductibles."
+        ),
+    )
+
+    # ========================================================
+    # PARSING X
+    # ========================================================
+
+    def parse_random_forest_features(
+        value: str,
+    ) -> np.ndarray:
+        """
+        Convertit les données saisies en matrice NumPy.
+
+        Format :
+
+        1,2; 2,3; 4,5
+
+        devient :
+
+        [[1, 2],
+         [2, 3],
+         [4, 5]]
+        """
+
+        if not value.strip():
+
+            raise ValueError(
+                "Les données X ne doivent pas être vides."
+            )
+
+        try:
+
+            rows = []
+
+            for row in value.split(";"):
+
+                row = row.strip()
+
+                if not row:
+                    continue
+
+                values = [
+                    float(item.strip())
+                    for item in row.split(",")
+                    if item.strip()
+                ]
+
+                if not values:
+
+                    raise ValueError(
+                        "Une observation X est vide."
+                    )
+
+                rows.append(values)
+
+            if not rows:
+
+                raise ValueError(
+                    "Aucune observation valide n'a été trouvée."
+                )
+
+            n_features = len(rows[0])
+
+            if n_features == 0:
+
+                raise ValueError(
+                    "Chaque observation doit contenir "
+                    "au moins une caractéristique."
+                )
+
+            for row in rows:
+
+                if len(row) != n_features:
+
+                    raise ValueError(
+                        "Toutes les observations X doivent "
+                        "avoir le même nombre de caractéristiques."
+                    )
+
+            X = np.asarray(
+                rows,
+                dtype=float,
+            )
+
+            if not np.all(np.isfinite(X)):
+
+                raise ValueError(
+                    "Les données contiennent des valeurs "
+                    "non finies."
+                )
+
+            return X
+
+        except ValueError as exc:
+
+            message = str(exc)
+
+            if message.startswith(
+                (
+                    "Une observation",
+                    "Aucune observation",
+                    "Chaque observation",
+                    "Toutes les observations",
+                    "Les données contiennent",
+                )
+            ):
+
+                raise
+
+            raise ValueError(
+                "X doit contenir uniquement des nombres. "
+                "Utilisez ';' entre les observations et ',' "
+                "entre les caractéristiques."
+            ) from exc
+
+    # ========================================================
+    # PARSING Y
+    # ========================================================
+
+    def parse_random_forest_labels(
+        value: str,
+    ) -> np.ndarray:
+        """
+        Convertit les classes Y en tableau NumPy.
+
+        Les labels numériques sont convertis en nombres.
+        Les labels textuels sont conservés.
+        """
+
+        if not value.strip():
+
+            raise ValueError(
+                "Les classes Y ne doivent pas être vides."
+            )
+
+        labels = [
+            item.strip()
+            for item in value.split(",")
+            if item.strip()
+        ]
+
+        if not labels:
+
+            raise ValueError(
+                "Aucune classe valide n'a été trouvée."
+            )
+
+        try:
+
+            numeric_labels = [
+                float(label)
+                for label in labels
+            ]
+
+            if all(
+                value.is_integer()
+                for value in numeric_labels
+            ):
+
+                return np.asarray(
+                    numeric_labels,
+                    dtype=int,
+                )
+
+            return np.asarray(
+                numeric_labels,
+                dtype=float,
+            )
+
+        except ValueError:
+
+            return np.asarray(
+                labels,
+                dtype=str,
+            )
+
+    # ========================================================
+    # EXECUTION
+    # ========================================================
+
+    if st.button(
+        "🚀 Entraîner le Random Forest",
+        type="primary",
+        use_container_width=True,
+        key="random_forest_execute",
+    ):
+
+        try:
+
+            # ------------------------------------------------
+            # PARSING
+            # ------------------------------------------------
+
+            X_train = parse_random_forest_features(
+                random_forest_x_input
+            )
+
+            y_train = parse_random_forest_labels(
+                random_forest_y_input
+            )
+
+            X_test = parse_random_forest_features(
+                random_forest_test_input
+            )
+
+            # ------------------------------------------------
+            # PARAMÈTRES
+            # ------------------------------------------------
+
+            n_estimators = int(
+                random_forest_n_estimators
+            )
+
+            max_depth = int(
+                random_forest_max_depth
+            )
+
+            min_samples_split = int(
+                random_forest_min_samples_split
+            )
+
+            random_state = int(
+                random_forest_random_state
+            )
+
+            # ------------------------------------------------
+            # MAX FEATURES
+            # ------------------------------------------------
+
+            if random_forest_max_features == "all":
+
+                max_features = X_train.shape[1]
+
+            else:
+
+                max_features = random_forest_max_features
+
+            # ------------------------------------------------
+            # VALIDATION
+            # ------------------------------------------------
+
+            if len(X_train) != len(y_train):
+
+                raise ValueError(
+                    "X et Y doivent contenir le même nombre "
+                    "d'observations."
+                )
+
+            if X_train.shape[1] != X_test.shape[1]:
+
+                raise ValueError(
+                    "Les données d'entraînement et les données "
+                    "de test doivent avoir le même nombre "
+                    "de caractéristiques."
+                )
+
+            if len(X_train) < 2:
+
+                raise ValueError(
+                    "Le Random Forest nécessite au moins "
+                    "deux observations d'entraînement."
+                )
+
+            if max_features is not None:
+
+                if max_features < 1:
+
+                    raise ValueError(
+                        "max_features doit être supérieur ou égal à 1."
+                    )
+
+                if max_features > X_train.shape[1]:
+
+                    raise ValueError(
+                        "max_features ne peut pas être supérieur "
+                        "au nombre de caractéristiques."
+                    )
+
+            # ------------------------------------------------
+            # MODEL
+            # ------------------------------------------------
+
+            result = random_forest(
+                X_train,
+                y_train,
+                X_test,
+                n_estimators=n_estimators,
+                max_depth=max_depth,
+                min_samples_split=min_samples_split,
+                max_features=max_features,
+                random_state=random_state,
+            )
+
+            # ------------------------------------------------
+            # SESSION STATE
+            # ------------------------------------------------
+
+            st.session_state[
+                "random_forest_result"
+            ] = result
+
+            st.session_state[
+                "random_forest_X_train"
+            ] = X_train
+
+            st.session_state[
+                "random_forest_y_train"
+            ] = y_train
+
+            st.session_state[
+                "random_forest_X_test"
+            ] = X_test
+
+            st.success(
+                "✅ Random Forest entraîné avec succès."
+            )
+
+        except (ValueError, TypeError) as exc:
+
+            st.error(
+                f"❌ {exc}"
+            )
+
+
+# ============================================================
+# RANDOM FOREST RESULTS
+# ============================================================
+
+if (
+    algorithm == "🌲 Random Forest"
+    and "random_forest_result" in st.session_state
+):
+
+    result = st.session_state[
+        "random_forest_result"
+    ]
+
+    X_train = st.session_state[
+        "random_forest_X_train"
+    ]
+
+    y_train = st.session_state[
+        "random_forest_y_train"
+    ]
+
+    X_test = st.session_state[
+        "random_forest_X_test"
+    ]
+
+    st.divider()
+
+    st.header(
+        "📊 Résultats — Random Forest"
+    )
+
+    # ========================================================
+    # METRICS
+    # ========================================================
+
+    col1, col2, col3, col4, col5 = st.columns(5)
+
+    with col1:
+
+        st.metric(
+            "Accuracy",
+            (
+                f"{result['accuracy']:.2%}"
+                if result["accuracy"] is not None
+                else "N/A"
+            ),
+        )
+
+    with col2:
+
+        st.metric(
+            "Nombre d'arbres",
+            str(result["n_estimators"]),
+        )
+
+    with col3:
+
+        st.metric(
+            "Observations train",
+            str(result["n_train_samples"]),
+        )
+
+    with col4:
+
+        st.metric(
+            "Observations test",
+            str(result["n_test_samples"]),
+        )
+
+    with col5:
+
+        st.metric(
+            "Caractéristiques",
+            str(result["n_features"]),
+        )
+
+    # ========================================================
+    # PARAMÈTRES
+    # ========================================================
+
+    st.subheader(
+        "⚙️ Paramètres utilisés"
+    )
+
+    max_features_result = result[
+        "max_features"
+    ]
+
+    if max_features_result is None:
+
+        max_features_display = "sqrt automatique"
+
+    else:
+
+        max_features_display = str(
+            max_features_result
+        )
+
+    parameter_df = pd.DataFrame(
+        {
+            "Paramètre": [
+                "Nombre d'arbres",
+                "Profondeur maximale",
+                "Minimum observations / split",
+                "Max features",
+                "Random state",
+            ],
+            "Valeur": [
+                result["n_estimators"],
+                result["max_depth"],
+                result["min_samples_split"],
+                max_features_display,
+                result["random_state"],
+            ],
+        }
+    )
+
+    st.dataframe(
+        parameter_df,
+        use_container_width=True,
+        hide_index=True,
+    )
+
+    # ========================================================
+    # PREDICTIONS
+    # ========================================================
+
+    st.subheader(
+        "🔢 Prédictions"
+    )
+
+    predictions = result[
+        "predictions"
+    ]
+
+    prediction_rows = []
+
+    for i, (features, prediction) in enumerate(
+        zip(X_test, predictions)
+    ):
+
+        row = {
+            "Observation": i + 1,
+        }
+
+        for feature_index, feature_value in enumerate(
+            features
+        ):
+
+            row[
+                f"X{feature_index + 1}"
+            ] = feature_value
+
+        row[
+            "Classe prédite"
+        ] = prediction
+
+        prediction_rows.append(
+            row
+        )
+
+    prediction_df = pd.DataFrame(
+        prediction_rows
+    )
+
+    st.dataframe(
+        prediction_df,
+        use_container_width=True,
+        hide_index=True,
+    )
+
+    # ========================================================
+    # FEATURES UTILISÉES PAR CHAQUE ARBRE
+    # ========================================================
+
+    st.subheader(
+        "🌳 Caractéristiques utilisées par arbre"
+    )
+
+    feature_indices = result[
+        "feature_indices"
+    ]
+
+    feature_rows = []
+
+    for tree_index, indices in enumerate(
+        feature_indices
+    ):
+
+        feature_rows.append(
+            {
+                "Arbre": tree_index + 1,
+                "Caractéristiques": ", ".join(
+                    f"X{i + 1}"
+                    for i in indices
+                ),
+                "Nombre de caractéristiques": len(
+                    indices
+                ),
+            }
+        )
+
+    feature_df = pd.DataFrame(
+        feature_rows
+    )
+
+    st.dataframe(
+        feature_df,
+        use_container_width=True,
+        hide_index=True,
+    )
+
+    # ========================================================
+    # VISUALISATION 2D
+    # ========================================================
+
+    st.subheader(
+        "📈 Visualisation des données"
+    )
+
+    if plt is None:
+
+        st.warning(
+            "La visualisation nécessite Matplotlib. "
+            "Installez-le avec `pip install matplotlib`."
+        )
+
+    elif X_train.shape[1] == 2:
+
+        fig, ax = plt.subplots(
+            figsize=(10, 6)
+        )
+
+        classes = np.unique(
+            y_train
+        )
+
+        for class_value in classes:
+
+            mask = (
+                y_train == class_value
+            )
+
+            ax.scatter(
+                X_train[mask, 0],
+                X_train[mask, 1],
+                s=80,
+                label=f"Classe {class_value}",
+            )
+
+        # ----------------------------------------------------
+        # OBSERVATIONS DE TEST
+        # ----------------------------------------------------
+
+        ax.scatter(
+            X_test[:, 0],
+            X_test[:, 1],
+            marker="*",
+            s=220,
+            label="Nouvelles observations",
+        )
+
+        # ----------------------------------------------------
+        # ANNOTATIONS
+        # ----------------------------------------------------
+
+        for i, prediction in enumerate(
+            predictions
+        ):
+
+            ax.annotate(
+                f"→ {prediction}",
+                (
+                    X_test[i, 0],
+                    X_test[i, 1],
+                ),
+                xytext=(8, 8),
+                textcoords="offset points",
+            )
+
+        ax.set_xlabel(
+            "Caractéristique X₁"
+        )
+
+        ax.set_ylabel(
+            "Caractéristique X₂"
+        )
+
+        ax.set_title(
+            "Random Forest — Classification"
+        )
+
+        ax.legend()
+
+        ax.grid(
+            alpha=0.3
+        )
+
+        st.pyplot(fig)
+
+        plt.close(fig)
+
+    else:
+
+        st.info(
+            "La visualisation graphique 2D est disponible "
+            "lorsque les données contiennent exactement "
+            "deux caractéristiques."
+        )
+
+    # ========================================================
+    # INTERPRÉTATION
+    # ========================================================
+
+    st.subheader(
+        "💡 Interprétation"
+    )
+
+    st.markdown(
+        f"""
+        **Nombre d'arbres :**
+        `{result["n_estimators"]}`
+
+        Le Random Forest construit une forêt composée de
+        **{result["n_estimators"]} arbres de décision**.
+
+        Chaque arbre est entraîné sur un échantillon bootstrap
+        des données d'entraînement.
+
+        En plus du rééchantillonnage des observations, chaque arbre
+        utilise un sous-ensemble aléatoire des caractéristiques.
+
+        **Nombre de caractéristiques :**
+        `{result["n_features"]}`
+
+        **Nombre d'observations d'entraînement :**
+        `{result["n_train_samples"]}`
+
+        Pour chaque nouvelle observation, chaque arbre produit
+        une prédiction.
+
+        La prédiction finale est obtenue par **vote majoritaire**
+        entre les arbres.
+
+        **Accuracy :**
+        `{f"{result['accuracy']:.2%}" if result["accuracy"] is not None else "N/A"}`
+
+        Cette accuracy correspond à la proportion d'observations
+        correctement classées sur les données d'entraînement
+        lorsqu'un jeu de labels de test n'est pas fourni.
+        """
+    )
+
+    
+    # ========================================================
+    # EXPLICATION MATHÉMATIQUE
+    # ========================================================
+
+    accuracy = result["accuracy"]
+
+    if accuracy is not None:
+        accuracy_display = f"{accuracy:.2%}"
+    else:
+        accuracy_display = "N/A"
+
+    st.markdown(
+        f"""
+        ### 📐 Explication mathématique
+
+        Le **Random Forest** repose sur un ensemble de plusieurs
+        arbres de décision.
+
+        Chaque arbre est entraîné sur un échantillon bootstrap
+        des données d'entraînement.
+
+        En plus du rééchantillonnage des observations, chaque arbre
+        utilise un sous-ensemble aléatoire des caractéristiques.
+
+        **Nombre de caractéristiques :**
+        `{result["n_features"]}`
+
+        **Nombre d'observations d'entraînement :**
+        `{result["n_train_samples"]}`
+
+        Pour chaque nouvelle observation, chaque arbre produit
+        une prédiction.
+
+        La prédiction finale est obtenue par **vote majoritaire**
+        entre les arbres.
+
+        **Accuracy :**
+        `{accuracy_display}`
+
+        Cette accuracy correspond à la proportion d'observations
+        correctement classées sur les données de test lorsqu'un
+        jeu de labels de test est fourni.
+        """
+    )
+
+    
+# ============================================================
+# 🎲 NAIVE BAYES
+# ============================================================
+
+elif algorithm == "🎲 Naive Bayes":
+
+    st.subheader("🎲 Gaussian Naive Bayes")
+
+    st.markdown(
+        """
+        Le **Naive Bayes** est un algorithme de classification
+        probabiliste basé sur le théorème de Bayes.
+
+        Ici, nous utilisons la variante **Gaussian Naive Bayes**,
+        adaptée aux caractéristiques numériques.
+        """
+    )
+
+    # ========================================================
+    # EXEMPLES
+    # ========================================================
+
+    st.markdown("### 📊 Jeu de données")
+
+    naive_bayes_example = st.selectbox(
+        "Choisir un exemple",
+        [
+            "Données personnalisées",
+            "Deux groupes",
+            "Trois groupes",
+            "Classification multiclasses",
+        ],
+        key="naive_bayes_example",
+    )
+
+    if naive_bayes_example == "Deux groupes":
+
+        default_x = (
+            "1,1; 1.2,1.1; 0.8,0.9; 1.1,1.2; "
+            "5,5; 5.2,5.1; 4.8,4.9; 5.1,5.2"
+        )
+
+        default_y = "0,0,0,0,1,1,1,1"
+
+        default_test = (
+            "1,1; 5,5; 1.1,0.9; 4.9,5.1"
+        )
+
+    elif naive_bayes_example == "Trois groupes":
+
+        default_x = (
+            "1,1; 1.2,1.1; 0.9,1; "
+            "5,5; 5.2,5.1; 4.9,5.2; "
+            "9,1; 9.2,1.1; 8.9,0.9"
+        )
+
+        default_y = "0,0,0,1,1,1,2,2,2"
+
+        default_test = (
+            "1.1,1; 5.1,5; 9.1,1"
+        )
+
+    elif naive_bayes_example == "Classification multiclasses":
+
+        default_x = (
+            "1,1; 1.1,1.2; 0.9,1.1; "
+            "5,5; 5.1,4.9; 4.9,5.2; "
+            "9,1; 9.2,1.1; 8.8,0.9"
+        )
+
+        default_y = "0,0,0,1,1,1,2,2,2"
+
+        default_test = (
+            "1,1.1; 5,5; 9,1"
+        )
+
+    else:
+
+        default_x = (
+            "1,1; 1.2,1.1; 0.8,0.9; "
+            "5,5; 5.2,5.1; 4.8,4.9"
+        )
+
+        default_y = "0,0,0,1,1,1"
+
+        default_test = "1,1; 5,5"
+
+    # ========================================================
+    # DONNÉES D'ENTRAÎNEMENT
+    # ========================================================
+
+    naive_bayes_x = st.text_area(
+        "X — données d'entraînement",
+        value=default_x,
+        key="naive_bayes_x",
+        help=(
+            "Séparez les observations par ';' "
+            "et les caractéristiques par ','."
+        ),
+    )
+
+    naive_bayes_y = st.text_input(
+        "Y — classes",
+        value=default_y,
+        key="naive_bayes_y",
+        help=(
+            "Entrez les classes séparées par des virgules."
+        ),
+    )
+
+    # ========================================================
+    # DONNÉES DE TEST
+    # ========================================================
+
+    naive_bayes_x_test = st.text_area(
+        "X — observations à prédire",
+        value=default_test,
+        key="naive_bayes_x_test",
+        help=(
+            "Entrez les observations à prédire "
+            "avec le même nombre de caractéristiques."
+        ),
+    )
+
+    # ========================================================
+    # PARAMÈTRES
+    # ========================================================
+
+    st.markdown("### ⚙️ Paramètres")
+
+    naive_bayes_smoothing = st.number_input(
+        "Variance smoothing",
+        min_value=1e-12,
+        max_value=1.0,
+        value=1e-9,
+        step=1e-9,
+        format="%.10f",
+        key="naive_bayes_smoothing",
+        help=(
+            "Petite valeur ajoutée aux variances "
+            "pour éviter les variances nulles."
+        ),
+    )
+
+    # ========================================================
+    # PARSERS
+    # ========================================================
+
+    def parse_naive_bayes_features(text):
+        """Convertit '1,2; 3,4' en matrice NumPy."""
+
+        try:
+            rows = [
+                row.strip()
+                for row in text.split(";")
+                if row.strip()
+            ]
+
+            if not rows:
+                raise ValueError(
+                    "Aucune observation fournie."
+                )
+
+            data = []
+
+            for row in rows:
+
+                values = [
+                    float(value.strip())
+                    for value in row.split(",")
+                ]
+
+                if not values:
+                    raise ValueError(
+                        "Une observation est vide."
+                    )
+
+                data.append(values)
+
+            n_features = len(data[0])
+
+            if n_features == 0:
+                raise ValueError(
+                    "Chaque observation doit contenir "
+                    "au moins une caractéristique."
+                )
+
+            if any(
+                len(row) != n_features
+                for row in data
+            ):
+                raise ValueError(
+                    "Toutes les observations doivent avoir "
+                    "le même nombre de caractéristiques."
+                )
+
+            return np.asarray(
+                data,
+                dtype=float,
+            )
+
+        except ValueError as exc:
+
+            raise ValueError(
+                f"Format des données invalide : {exc}"
+            ) from exc
+
+    def parse_naive_bayes_labels(text):
+        """Convertit '0,1,0,1' en vecteur de classes."""
+
+        values = [
+            value.strip()
+            for value in text.split(",")
+            if value.strip()
+        ]
+
+        if not values:
+            raise ValueError(
+                "Aucune classe fournie."
+            )
+
+        parsed = []
+
+        for value in values:
+
+            try:
+                number = float(value)
+
+                if number.is_integer():
+                    parsed.append(int(number))
+                else:
+                    parsed.append(number)
+
+            except ValueError:
+
+                parsed.append(value)
+
+        return np.asarray(parsed)
+
+    # ========================================================
+    # EXÉCUTION
+    # ========================================================
+
+    if st.button(
+        "▶️ Entraîner le Naive Bayes",
+        key="run_naive_bayes",
+        type="primary",
+    ):
+
+        try:
+
+            X_train = parse_naive_bayes_features(
+                naive_bayes_x
+            )
+
+            y_train = parse_naive_bayes_labels(
+                naive_bayes_y
+            )
+
+            X_test = parse_naive_bayes_features(
+                naive_bayes_x_test
+            )
+
+            if X_train.shape[0] != y_train.shape[0]:
+                raise ValueError(
+                    "Le nombre d'observations X doit être "
+                    "égal au nombre de classes Y."
+                )
+
+            if X_train.shape[1] != X_test.shape[1]:
+                raise ValueError(
+                    "X_train et X_test doivent avoir "
+                    "le même nombre de caractéristiques."
+                )
+
+            result = naive_bayes(
+                X_train,
+                y_train,
+                X_test,
+                variance_smoothing=naive_bayes_smoothing,
+            )
+
+            st.session_state[
+                "naive_bayes_result"
+            ] = result
+
+            st.session_state[
+                "naive_bayes_X_train"
+            ] = X_train
+
+            st.session_state[
+                "naive_bayes_y_train"
+            ] = y_train
+
+            st.session_state[
+                "naive_bayes_X_test"
+            ] = X_test
+
+            st.success(
+                "✅ Naive Bayes entraîné avec succès."
+            )
+
+        except Exception as exc:
+
+            st.error(
+                f"❌ Erreur Naive Bayes : {exc}"
+            )
+
+
+# ============================================================
+# RÉSULTATS NAIVE BAYES
+# ============================================================
+
+if (
+    algorithm == "🎲 Naive Bayes"
+    and "naive_bayes_result" in st.session_state
+):
+
+    result = st.session_state[
+        "naive_bayes_result"
+    ]
+
+    X_train = st.session_state[
+        "naive_bayes_X_train"
+    ]
+
+    y_train = st.session_state[
+        "naive_bayes_y_train"
+    ]
+
+    X_test = st.session_state[
+        "naive_bayes_X_test"
+    ]
+
+    st.markdown("---")
+
+    st.subheader("📈 Résultats — Naive Bayes")
+
+    # ========================================================
+    # MÉTRIQUES
+    # ========================================================
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    with col1:
+
+        accuracy = result["accuracy"]
+
+        if accuracy is not None:
+            accuracy_display = f"{accuracy:.2%}"
+        else:
+            accuracy_display = "N/A"
+
+        st.metric(
+            "Accuracy",
+            accuracy_display,
+        )
+
+    with col2:
+        st.metric(
+            "Classes",
+            result["n_classes"],
+        )
+
+    with col3:
+        st.metric(
+            "Features",
+            result["n_features"],
+        )
+
+    with col4:
+        st.metric(
+            "Observations test",
+            result["n_test_samples"],
+        )
+
+    # ========================================================
+    # PROBABILITÉS A PRIORI
+    # ========================================================
+
+    st.markdown("### 📊 Probabilités a priori")
+
+    prior_data = {
+        "Classe": result["classes"],
+        "Prior": [
+            f"{value:.4f}"
+            for value in result["priors"]
+        ],
+    }
+
+    st.dataframe(
+        prior_data,
+        use_container_width=True,
+    )
+
+    # ========================================================
+    # MOYENNES
+    # ========================================================
+
+    st.markdown("### 📐 Moyennes par classe")
+
+    mean_data = {
+        f"Feature {index + 1}":
+        result["means"][:, index]
+        for index in range(
+            result["n_features"]
+        )
+    }
+
+    mean_data["Classe"] = result["classes"]
+
+    st.dataframe(
+        mean_data,
+        use_container_width=True,
+    )
+
+    # ========================================================
+    # VARIANCES
+    # ========================================================
+
+    st.markdown("### 📏 Variances par classe")
+
+    variance_data = {
+        f"Feature {index + 1}":
+        result["variances"][:, index]
+        for index in range(
+            result["n_features"]
+        )
+    }
+
+    variance_data["Classe"] = result["classes"]
+
+    st.dataframe(
+        variance_data,
+        use_container_width=True,
+    )
+
+    # ========================================================
+    # PRÉDICTIONS
+    # ========================================================
+
+    st.markdown("### 🎯 Prédictions")
+
+    predictions = result["predictions"]
+    probabilities = result["probabilities"]
+    classes = result["classes"]
+
+    prediction_rows = []
+
+    for index, prediction in enumerate(
+        predictions
+    ):
+
+        row = {
+            "Observation": index + 1,
+            "Classe prédite": prediction,
+        }
+
+        for class_index, class_value in enumerate(
+            classes
+        ):
+            row[
+                f"P(classe {class_value})"
+            ] = f"{probabilities[index, class_index]:.2%}"
+
+        prediction_rows.append(row)
+
+    st.dataframe(
+        prediction_rows,
+        use_container_width=True,
+    )
+
+    # ========================================================
+    # VISUALISATION 2D
+    # ========================================================
+
+    if X_train.shape[1] >= 2:
+
+        st.markdown("### 📊 Visualisation 2D")
+
+        fig, ax = plt.subplots()
+
+        for class_value in np.unique(y_train):
+
+            mask = y_train == class_value
+
+            ax.scatter(
+                X_train[mask, 0],
+                X_train[mask, 1],
+                label=f"Classe {class_value}",
+            )
+
+        ax.scatter(
+            X_test[:, 0],
+            X_test[:, 1],
+            marker="x",
+            s=100,
+            label="Observations à prédire",
+        )
+
+        ax.set_xlabel("Feature 1")
+        ax.set_ylabel("Feature 2")
+        ax.set_title(
+            "Naive Bayes — Classification"
+        )
+        ax.legend()
+        ax.grid(True, alpha=0.3)
+
+        st.pyplot(fig)
+
+    # ========================================================
+    # INTERPRÉTATION
+    # ========================================================
+
+    st.markdown("### 💡 Interprétation")
+
+    st.markdown(
+        f"""
+        Le modèle **Gaussian Naive Bayes** a appris
+        **{result["n_classes"]} classes** à partir de
+        **{result["n_train_samples"]} observations**.
+
+        Chaque classe possède :
+
+        - une probabilité a priori ;
+        - une moyenne pour chaque caractéristique ;
+        - une variance pour chaque caractéristique.
+
+        Pour une nouvelle observation, le modèle calcule
+        la probabilité qu'elle appartienne à chaque classe.
+
+        La classe possédant la probabilité la plus élevée
+        est sélectionnée comme prédiction.
+
+        **Nombre de caractéristiques :**
+        `{result["n_features"]}`
+
+        **Nombre d'observations testées :**
+        `{result["n_test_samples"]}`
+
+        **Variance smoothing :**
+        `{result["variance_smoothing"]}`
+        """
+    )
+
+    # ========================================================
+    # EXPLICATION MATHÉMATIQUE
+    # ========================================================
+
+    st.markdown("### 📐 Explication mathématique")
+
+    st.markdown(
+        """
+        Le Naive Bayes utilise le théorème de Bayes.
+
+        Pour une observation `x` et une classe `C`, le modèle
+        compare les probabilités :
+
+        `P(C | x)`
+
+        En supposant que les caractéristiques sont
+        conditionnellement indépendantes, la probabilité
+        conditionnelle peut être décomposée en produit des
+        probabilités de chaque caractéristique.
+
+        Pour une caractéristique numérique, Gaussian Naive Bayes
+        utilise une distribution normale caractérisée par :
+
+        - une moyenne `μ` ;
+        - une variance `σ²`.
+
+        Le modèle sélectionne finalement la classe ayant
+        la probabilité postérieure la plus élevée.
+
+        Cette hypothèse d'indépendance entre caractéristiques
+        est à l'origine du terme **« Naive »**.
+        """
+    )
+
+   
+
+# ============================================================
+# PCA
+# ============================================================
+
+elif algorithm == "📐 PCA":
+
+    st.subheader("📐 Analyse en Composantes Principales (PCA)")
+
+    st.markdown(
+        """
+        Le **PCA (Principal Component Analysis)** permet de réduire
+        la dimension des données tout en conservant une grande partie
+        de leur variance.
+
+        Le PCA transforme les caractéristiques originales en nouvelles
+        composantes principales, classées selon la quantité de variance
+        qu'elles expliquent.
+        """
+    )
+
+    # ========================================================
+    # EXEMPLES
+    # ========================================================
+
+    st.markdown("### 📚 Exemple de données")
+
+    pca_example = st.selectbox(
+        "Choisir un exemple",
+        [
+            "Données personnalisées",
+            "Données 2D",
+            "Données 3D",
+            "Données multivariées",
+        ],
+        key="pca_example",
+    )
+
+    pca_examples = {
+        "Données 2D": {
+            "X": (
+                "2,4; "
+                "3,6; "
+                "4,8; "
+                "5,10; "
+                "6,12; "
+                "7,14"
+            ),
+            "n_components": 1,
+        },
+        "Données 3D": {
+            "X": (
+                "1,2,10; "
+                "2,4,20; "
+                "3,6,30; "
+                "4,8,40; "
+                "5,10,50; "
+                "6,12,60"
+            ),
+            "n_components": 2,
+        },
+        "Données multivariées": {
+            "X": (
+                "2,10,100,5; "
+                "3,12,110,6; "
+                "4,15,120,7; "
+                "5,18,130,8; "
+                "6,20,140,9; "
+                "7,22,150,10; "
+                "8,25,160,11; "
+                "9,27,170,12"
+            ),
+            "n_components": 2,
+        },
+        "Données personnalisées": {
+            "X": "",
+            "n_components": 2,
+        },
+    }
+
+    selected_example = pca_examples[
+        pca_example
+    ]
+
+    # Ne pas modifier la session_state d'un widget déjà créé.
+    if (
+        pca_example != "Données personnalisées"
+        and st.session_state.get("pca_last_example")
+        != pca_example
+    ):
+        st.session_state["pca_x"] = (
+            selected_example["X"]
+        )
+        st.session_state["pca_n_components"] = (
+            selected_example["n_components"]
+        )
+        st.session_state["pca_last_example"] = (
+            pca_example
+        )
+
+    # ========================================================
+    # DONNÉES
+    # ========================================================
+
+    st.markdown("### 📊 Données")
+
+    pca_x = st.text_area(
+        "Données X",
+        value=st.session_state.get(
+            "pca_x",
+            "",
+        ),
+        height=120,
+        key="pca_x",
+        help=(
+            "Séparez les observations par ';' "
+            "et les caractéristiques par ','. "
+            "Exemple : 1,2,3; 2,4,6; 3,6,9"
+        ),
+    )
+
+    st.caption(
+        "Format : observation1; observation2; ... "
+        "avec les caractéristiques séparées par des virgules."
+    )
+
+    # ========================================================
+    # PARAMÈTRES
+    # ========================================================
+
+    st.markdown("### ⚙️ Paramètres")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        pca_n_components = st.number_input(
+            "Nombre de composantes",
+            min_value=1,
+            value=int(
+                st.session_state.get(
+                    "pca_n_components",
+                    2,
+                )
+            ),
+            step=1,
+            key="pca_n_components",
+            help=(
+                "Nombre de composantes principales "
+                "à conserver."
+            ),
+        )
+
+    with col2:
+        pca_standardize = st.checkbox(
+            "Standardiser les données",
+            value=True,
+            key="pca_standardize",
+            help=(
+                "Recommandé lorsque les caractéristiques "
+                "ont des échelles différentes."
+            ),
+        )
+
+    # ========================================================
+    # PARSERS
+    # ========================================================
+
+    def parse_pca_features(text):
+        """
+        Transforme le texte de l'utilisateur en matrice NumPy.
+        """
+
+        if not text.strip():
+            raise ValueError(
+                "Les données X ne peuvent pas être vides."
+            )
+
+        rows = []
+
+        for row in text.split(";"):
+            row = row.strip()
+
+            if not row:
+                continue
+
+            values = [
+                value.strip()
+                for value in row.split(",")
+                if value.strip()
+            ]
+
+            if not values:
+                continue
+
+            try:
+                rows.append(
+                    [
+                        float(value)
+                        for value in values
+                    ]
+                )
+            except ValueError as exc:
+                raise ValueError(
+                    "Toutes les caractéristiques doivent "
+                    "être numériques."
+                ) from exc
+
+        if not rows:
+            raise ValueError(
+                "Aucune observation valide n'a été trouvée."
+            )
+
+        n_features = len(rows[0])
+
+        if n_features == 0:
+            raise ValueError(
+                "Chaque observation doit contenir "
+                "au moins une caractéristique."
+            )
+
+        for row in rows:
+            if len(row) != n_features:
+                raise ValueError(
+                    "Toutes les observations doivent avoir "
+                    "le même nombre de caractéristiques."
+                )
+
+        return np.array(
+            rows,
+            dtype=float,
+        )
+
+    # ========================================================
+    # EXÉCUTION
+    # ========================================================
+
+    if st.button(
+        "▶️ Appliquer le PCA",
+        type="primary",
+        key="run_pca",
+    ):
+
+        try:
+            X = parse_pca_features(
+                pca_x
+            )
+
+            result = pca(
+                X,
+                n_components=int(
+                    pca_n_components
+                ),
+                standardize=pca_standardize,
+            )
+
+            st.session_state[
+                "pca_result"
+            ] = result
+
+            st.session_state[
+                "pca_X"
+            ] = X
+
+            st.success(
+                "✅ PCA calculé avec succès."
+            )
+
+        except ValueError as exc:
+            st.error(
+                f"❌ Erreur PCA : {exc}"
+            )
+
+        except Exception as exc:
+            st.error(
+                f"❌ Une erreur inattendue est survenue : {exc}"
+            )
+
+
+# ============================================================
+# RÉSULTATS PCA
+# ============================================================
+
+if (
+    algorithm == "📐 PCA"
+    and "pca_result" in st.session_state
+):
+
+    result = st.session_state[
+        "pca_result"
+    ]
+
+    X = st.session_state[
+        "pca_X"
+    ]
+
+    st.markdown("---")
+
+    st.subheader("📊 Résultats du PCA")
+
+    # ========================================================
+    # MÉTRIQUES PRINCIPALES
+    # ========================================================
+
+    variance_ratio = result[
+        "explained_variance_ratio"
+    ]
+
+    cumulative_variance = result[
+        "cumulative_explained_variance"
+    ]
+
+    total_explained = float(
+        cumulative_variance[-1]
+    )
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    with col1:
+        st.metric(
+            "Observations",
+            result["n_samples"],
+        )
+
+    with col2:
+        st.metric(
+            "Caractéristiques",
+            result["n_features"],
+        )
+
+    with col3:
+        st.metric(
+            "Composantes",
+            result["n_components"],
+        )
+
+    with col4:
+        st.metric(
+            "Variance conservée",
+            f"{total_explained:.2%}",
+        )
+
+    # ========================================================
+    # VARIANCE EXPLIQUÉE
+    # ========================================================
+
+    st.markdown("### 📈 Variance expliquée")
+
+    variance_data = {
+        "Composante": [
+            f"PC{i + 1}"
+            for i in range(
+                len(variance_ratio)
+            )
+        ],
+        "Variance expliquée": [
+            f"{value:.2%}"
+            for value in variance_ratio
+        ],
+        "Variance cumulée": [
+            f"{value:.2%}"
+            for value in cumulative_variance
+        ],
+    }
+
+    st.dataframe(
+        variance_data,
+        use_container_width=True,
+        hide_index=True,
+    )
+
+    # ========================================================
+    # VISUALISATION DE LA VARIANCE
+    # ========================================================
+
+    st.markdown(
+        "### 📊 Variance expliquée par composante"
+    )
+
+    fig_variance, ax_variance = plt.subplots(
+        figsize=(8, 4)
+    )
+
+    component_numbers = np.arange(
+        1,
+        len(variance_ratio) + 1,
+    )
+
+    ax_variance.bar(
+        component_numbers,
+        variance_ratio,
+    )
+
+    ax_variance.set_xlabel(
+        "Composante principale"
+    )
+
+    ax_variance.set_ylabel(
+        "Variance expliquée"
+    )
+
+    ax_variance.set_title(
+        "Variance expliquée par composante"
+    )
+
+    ax_variance.set_xticks(
+        component_numbers
+    )
+
+    ax_variance.set_ylim(
+        0,
+        max(
+            1.0,
+            float(
+                np.max(variance_ratio)
+            ) * 1.15,
+        ),
+    )
+
+    ax_variance.grid(
+        axis="y",
+        alpha=0.3,
+    )
+
+    st.pyplot(
+        fig_variance,
+        clear_figure=True,
+    )
+
+    # ========================================================
+    # COMPOSANTES PRINCIPALES
+    # ========================================================
+
+    st.markdown(
+        "### 🧭 Composantes principales"
+    )
+
+    components = result[
+        "components"
+    ]
+
+    component_columns = [
+        f"PC{i + 1}"
+        for i in range(
+            components.shape[1]
+        )
+    ]
+
+    feature_names = [
+        f"X{i + 1}"
+        for i in range(
+            components.shape[0]
+        )
+    ]
+
+    components_data = pd.DataFrame(
+        components,
+        index=feature_names,
+        columns=component_columns,
+    )
+
+    st.dataframe(
+        components_data,
+        use_container_width=True,
+    )
+
+    # ========================================================
+    # VALEURS PROPRES
+    # ========================================================
+
+    st.markdown(
+        "### 🔢 Valeurs propres"
+    )
+
+    eigenvalues = result[
+        "eigenvalues"
+    ]
+
+    eigenvalue_data = pd.DataFrame(
+        {
+            "Composante": component_columns,
+            "Valeur propre": eigenvalues,
+        }
+    )
+
+    st.dataframe(
+        eigenvalue_data,
+        use_container_width=True,
+        hide_index=True,
+    )
+
+    # ========================================================
+    # DONNÉES TRANSFORMÉES
+    # ========================================================
+
+    st.markdown(
+        "### 🔄 Données transformées"
+    )
+
+    transformed = result[
+        "transformed_data"
+    ]
+
+    transformed_columns = [
+        f"PC{i + 1}"
+        for i in range(
+            transformed.shape[1]
+        )
+    ]
+
+    transformed_data = pd.DataFrame(
+        transformed,
+        columns=transformed_columns,
+    )
+
+    st.dataframe(
+        transformed_data,
+        use_container_width=True,
+        hide_index=True,
+    )
+
+    # ========================================================
+    # VISUALISATION 2D
+    # ========================================================
+
+    if (
+        transformed.shape[1] >= 2
+    ):
+
+        st.markdown(
+            "### 🗺️ Projection sur les deux premières composantes"
+        )
+
+        fig_pca, ax_pca = plt.subplots(
+            figsize=(8, 5)
+        )
+
+        ax_pca.scatter(
+            transformed[:, 0],
+            transformed[:, 1],
+            s=70,
+        )
+
+        ax_pca.set_xlabel(
+            "PC1"
+        )
+
+        ax_pca.set_ylabel(
+            "PC2"
+        )
+
+        ax_pca.set_title(
+            "Projection des observations dans l'espace PCA"
+        )
+
+        ax_pca.axhline(
+            0,
+            linewidth=0.8,
+            alpha=0.4,
+        )
+
+        ax_pca.axvline(
+            0,
+            linewidth=0.8,
+            alpha=0.4,
+        )
+
+        ax_pca.grid(
+            alpha=0.3
+        )
+
+        st.pyplot(
+            fig_pca,
+            clear_figure=True,
+        )
+
+    else:
+
+        st.info(
+            "ℹ️ Une seule composante a été sélectionnée. "
+            "Une projection 2D nécessite au moins deux composantes."
+        )
+
+    # ========================================================
+    # INTERPRÉTATION
+    # ========================================================
+
+    st.markdown(
+        "### 💡 Interprétation"
+    )
+
+    first_variance = float(
+        variance_ratio[0]
+    )
+
+    st.info(
+        f"""
+        **PC1** explique environ **{first_variance:.2%}**
+        de la variance totale conservée.
+
+        Le PCA a transformé les **{result["n_features"]}**
+        caractéristiques originales en
+        **{result["n_components"]} composantes principales**.
+
+        La variance cumulée des composantes conservées est
+        de **{total_explained:.2%}**.
+        """
+    )
+
+    # ========================================================
+    # EXPLICATION MATHÉMATIQUE
+    # ========================================================
+
+    with st.expander(
+        "📐 Comprendre la démarche mathématique"
+    ):
+
+        st.markdown(
+            """
+            ### 1. Centrage / standardisation
+
+            Les données sont d'abord centrées autour de leur moyenne.
+
+            Si la standardisation est activée :
+
+            `Z = (X - μ) / σ`
+
+            ### 2. Matrice de covariance
+
+            On calcule ensuite la matrice de covariance :
+
+            `C = XᵀX / (n - 1)`
+
+            Cette matrice décrit les relations entre les
+            caractéristiques.
+
+            ### 3. Valeurs propres et vecteurs propres
+
+            On cherche les solutions de :
+
+            `Cv = λv`
+
+            où :
+
+            - `λ` représente une valeur propre ;
+            - `v` représente un vecteur propre.
+
+            Les vecteurs propres associés aux plus grandes valeurs
+            propres correspondent aux principales directions de variance.
+
+            ### 4. Sélection des composantes
+
+            Les composantes sont classées selon leurs valeurs propres.
+
+            La première composante explique donc la plus grande
+            quantité de variance possible.
+
+            ### 5. Projection
+
+            Les données sont ensuite projetées sur les composantes
+            sélectionnées :
+
+            `Z = XW`
+
+            où `W` contient les vecteurs propres sélectionnés.
+
+            Le résultat est une représentation des données dans un
+            espace de dimension réduite.
             """
         )
 
